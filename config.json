@@ -7,7 +7,7 @@
     "timeout":2
   },
   "database": {
-      "host": "localhost",
+      "host": "poc_psql",
       "port": "5432",
       "user": "user",
       "pass": "password",

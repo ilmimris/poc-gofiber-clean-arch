@@ -1,5 +1,5 @@
 # Builder
-FROM golang:1.14.2-alpine3.11 as builder
+FROM golang:1.15.3-alpine3.12 as builder
 
 RUN apk update && apk upgrade && \
     apk --update add git make
@@ -19,7 +19,7 @@ RUN apk update && apk upgrade && \
 
 WORKDIR /app 
 
-EXPOSE 9090
+EXPOSE 8080
 
 COPY --from=builder /app/engine /app
 
