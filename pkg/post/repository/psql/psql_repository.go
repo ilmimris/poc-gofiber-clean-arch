@@ -4,10 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log"
 
 	"github.com/ilmimris/poc-gofiber-clean-arch/pkg/common/repository"
 	"github.com/ilmimris/poc-gofiber-clean-arch/pkg/domain"
-	"github.com/sirupsen/logrus"
 )
 
 type psqlPostRepo struct {
@@ -48,14 +48,13 @@ func (p *psqlPostRepo) fetch(ctx context.Context, query string, args ...interfac
 	rows, err := p.DB.QueryContext(ctx, query, args...)
 
 	if err != nil {
-		logrus.Error(err)
 		return nil, err
 	}
 
 	defer func() {
 		errRow := rows.Close()
 		if errRow != nil {
-			logrus.Error(errRow)
+			log.Print(errRow)
 		}
 	}()
 
@@ -74,7 +73,7 @@ func (p *psqlPostRepo) fetch(ctx context.Context, query string, args ...interfac
 		)
 
 		if err != nil {
-			logrus.Error(err)
+			log.Print(err)
 			return nil, err
 		}
 
