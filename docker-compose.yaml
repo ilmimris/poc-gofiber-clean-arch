@@ -1,32 +1,59 @@
 version: "2.3"
 services:
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: article_management_api
-    ports:
-      - 9090:9090
-    depends_on:
-      db:
-        condition: service_healthy
-    volumes:
-      - ./config.json:/app/config.json
+  # web:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: article_management_api
+  #   ports:
+  #     - 9090:9090
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   volumes:
+  #     - ./config.json:/app/config.json
 
-  db:
-    image: mysql:5.7 
-    container_name: go_clean_arch_mysql
-    command: mysqld --user=root
-    volumes:
-      - ./article.sql:/docker-entrypoint-initdb.d/init.sql
+  # db:
+  #   image: mysql:5.7
+  #   container_name: poc_mysql
+  #   command: mysqld --user=root
+  #   volumes:
+  #     - ./post_mysql.sql:/docker-entrypoint-initdb.d/init.sql
+  #   ports:
+  #     - 3306:3306
+  #   environment:
+  #     - MYSQL_DATABASE=post
+  #     - MYSQL_USER=user
+  #     - MYSQL_PASSWORD=password
+  #     - MYSQL_ROOT_PASSWORD=root
+  #   healthcheck:
+  #     test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+  #     timeout: 5s
+  #     retries: 10
+
+  postgres:
+    image: postgres:alpine
+    container_name: poc_psql
     ports:
-      - 3306:3306
+      - "5432:5432"
+    volumes:
+      - ./post_psql.sql:/docker-entrypoint-initdb.d/init.sql
+      # - ./dbdata:/var/lib/postgresql/data
     environment:
-      - MYSQL_DATABASE=article
-      - MYSQL_USER=user
-      - MYSQL_PASSWORD=password
-      - MYSQL_ROOT_PASSWORD=root
+      - POSTGRES_DB=post
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
     healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
       timeout: 5s
-      retries: 10
+      retries: 5
+  
+  pgadmin4:
+    image: dpage/pgadmin4
+    container_name: poc_psql_admin
+    ports:
+      - "5433:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=hi@mris.dev
+      - PGADMIN_DEFAULT_PASSWORD=password
