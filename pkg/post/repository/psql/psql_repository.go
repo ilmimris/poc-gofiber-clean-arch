@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/ilmimris/poc-gofiber-clean-arch/common/repository"
-	"github.com/ilmimris/poc-gofiber-clean-arch/domain"
+	"github.com/ilmimris/poc-gofiber-clean-arch/pkg/common/repository"
+	"github.com/ilmimris/poc-gofiber-clean-arch/pkg/domain"
 	"github.com/sirupsen/logrus"
 )
 
@@ -90,9 +90,9 @@ func (p *psqlPostRepo) fetch(ctx context.Context, query string, args ...interfac
 func (p *psqlPostRepo) Fetch(ctx context.Context, cursor string, num int64) (res []domain.Post, nextCursor string, err error) {
 	query := `SELECT id, title, content, author_id, updated_at, created_at 
 				FROM public.post 
-				WHERE created_at > ? 
+				WHERE created_at > $1 
 				ORDER BY created_at 
-				LIMIT ?`
+				LIMIT $2`
 
 	decodedCursor, err := repository.DecodeCursor(cursor)
 	if err != nil && cursor != "" {
@@ -114,7 +114,7 @@ func (p *psqlPostRepo) Fetch(ctx context.Context, cursor string, num int64) (res
 func (p *psqlPostRepo) GetByID(ctx context.Context, id int64) (res domain.Post, err error) {
 	query := `SELECT id, title, content, author_id, updated_at, created_at
 				FROM public.post 
-				WHERE id = ?`
+				WHERE id = $1`
 
 	list, err := p.fetch(ctx, query, id)
 	if err != nil {
@@ -133,7 +133,7 @@ func (p *psqlPostRepo) GetByID(ctx context.Context, id int64) (res domain.Post, 
 func (p *psqlPostRepo) GetByTitle(ctx context.Context, title string) (res domain.Post, err error) {
 	query := `SELECT id, title, content, author_id, updated_at, created_at
 				FROM public.post 
-				WHERE title = ?`
+				WHERE title = $1`
 
 	list, err := p.fetch(ctx, query, title)
 	if err != nil {
@@ -150,7 +150,7 @@ func (p *psqlPostRepo) GetByTitle(ctx context.Context, title string) (res domain
 }
 
 func (p *psqlPostRepo) Update(ctx context.Context, entry *domain.Post) (err error) {
-	query := `UPDATE public.post set title=?, content=?, author_id=?, updated_at=? WHERE ID = ?`
+	query := `UPDATE public.post set title=$1, content=$2, author_id=$3, updated_at=$4 WHERE ID = $5`
 
 	statement, err := p.DB.PrepareContext(ctx, query)
 	if err != nil {
@@ -174,7 +174,7 @@ func (p *psqlPostRepo) Update(ctx context.Context, entry *domain.Post) (err erro
 }
 
 func (p *psqlPostRepo) Delete(ctx context.Context, id int64) (err error) {
-	query := `DELETE FROM public.post WHERE id = ?`
+	query := `DELETE FROM public.post WHERE id = $1`
 
 	statement, err := p.DB.PrepareContext(ctx, query)
 	if err != nil {

@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ilmimris/poc-gofiber-clean-arch/common/repository"
-	"github.com/ilmimris/poc-gofiber-clean-arch/domain"
-	postRepo "github.com/ilmimris/poc-gofiber-clean-arch/post/repository/psql"
+	"github.com/ilmimris/poc-gofiber-clean-arch/pkg/common/repository"
+	"github.com/ilmimris/poc-gofiber-clean-arch/pkg/domain"
+	postRepo "github.com/ilmimris/poc-gofiber-clean-arch/pkg/post/repository/psql"
 	"github.com/stretchr/testify/assert"
 
 	sqlmock "gopkg.in/DATA-DOG/go-sqlmock.v1"
@@ -36,7 +36,7 @@ func TestFetch(t *testing.T) {
 		AddRow(mockPost[1].ID, mockPost[1].Title, mockPost[1].Content,
 			mockPost[1].Author.ID, mockPost[1].UpdatedAt, mockPost[1].CreatedAt)
 
-	query := "SELECT id, title, content, author_id, updated_at, created_at FROM public.post WHERE created_at > \\? ORDER BY created_at LIMIT \\?"
+	query := "SELECT id, title, content, author_id, updated_at, created_at FROM public.post WHERE created_at > \\$1 ORDER BY created_at LIMIT \\$2"
 
 	mock.ExpectQuery(query).WillReturnRows(rows)
 	entry := postRepo.NewPsqlPostRepository(db)
@@ -60,7 +60,7 @@ func TestGetByID(t *testing.T) {
 	rows := sqlmock.NewRows([]string{"id", "title", "content", "author_id", "updated_at", "created_at"}).
 		AddRow(1, "title 1", "Content 1", 1, time.Now(), time.Now())
 
-	query := "SELECT id, title, content, author_id, updated_at, created_at FROM public.post WHERE id = \\?"
+	query := "SELECT id, title, content, author_id, updated_at, created_at FROM public.post WHERE id = \\$1"
 
 	mock.ExpectQuery(query).WillReturnRows(rows)
 	entry := postRepo.NewPsqlPostRepository(db)
@@ -90,7 +90,7 @@ func TestStore(t *testing.T) {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}
 
-	query := "INSERT public.post SET title=\\? , content=\\? , author_id=\\? , updated_at=\\? , created_at=\\?"
+	query := "INSERT public.post SET title=\\$1 , content=\\$2 , author_id=\\$3 , updated_at=\\$4 , created_at=\\$5"
 	prep := mock.ExpectPrepare(query)
 	prep.ExpectExec().WithArgs(post.Title, post.Content, post.Author.ID, post.UpdatedAt, post.CreatedAt).WillReturnResult(sqlmock.NewResult(12, 1))
 
@@ -110,7 +110,7 @@ func TestGetByTitle(t *testing.T) {
 	rows := sqlmock.NewRows([]string{"id", "title", "content", "author_id", "updated_at", "created_at"}).
 		AddRow(1, "title 1", "Content 1", 1, time.Now(), time.Now())
 
-	query := "SELECT id, title, content, author_id, updated_at, created_at FROM public.post WHERE title = \\?"
+	query := "SELECT id, title, content, author_id, updated_at, created_at FROM public.post WHERE title = \\$1"
 
 	mock.ExpectQuery(query).WillReturnRows(rows)
 	entry := postRepo.NewPsqlPostRepository(db)
@@ -128,7 +128,7 @@ func TestDelete(t *testing.T) {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}
 
-	query := "DELETE FROM public.post WHERE id = \\?"
+	query := "DELETE FROM public.post WHERE id = \\$1"
 
 	prep := mock.ExpectPrepare(query)
 	prep.ExpectExec().WithArgs(12).WillReturnResult(sqlmock.NewResult(12, 1))
@@ -160,7 +160,7 @@ func TestUpdate(t *testing.T) {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}
 
-	query := "UPDATE public.post set title=\\?, content=\\?, author_id=\\?, updated_at=\\? WHERE ID = \\?"
+	query := "UPDATE public.post set title=\\$1, content=\\$2, author_id=\\$3, updated_at=\\$4 WHERE ID = \\$5"
 
 	prep := mock.ExpectPrepare(query)
 	prep.ExpectExec().WithArgs(post.Title, post.Content, post.Author.ID, post.UpdatedAt, post.ID).WillReturnResult(sqlmock.NewResult(12, 1))

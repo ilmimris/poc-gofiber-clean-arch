@@ -6,9 +6,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ilmimris/poc-gofiber-clean-arch/domain"
-	"github.com/ilmimris/poc-gofiber-clean-arch/domain/mocks"
-	ucase "github.com/ilmimris/poc-gofiber-clean-arch/post/usecase"
+	"github.com/ilmimris/poc-gofiber-clean-arch/pkg/domain"
+	"github.com/ilmimris/poc-gofiber-clean-arch/pkg/domain/mocks"
+	ucase "github.com/ilmimris/poc-gofiber-clean-arch/pkg/post/usecase"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )

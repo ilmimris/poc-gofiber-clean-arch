@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	authorRepo "github.com/ilmimris/poc-gofiber-clean-arch/author/repository/psql"
+	authorRepo "github.com/ilmimris/poc-gofiber-clean-arch/pkg/author/repository/psql"
 	"github.com/stretchr/testify/assert"
 
 	sqlmock "gopkg.in/DATA-DOG/go-sqlmock.v1"

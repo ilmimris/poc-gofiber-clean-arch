@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/ilmimris/poc-gofiber-clean-arch/domain"
+	"github.com/ilmimris/poc-gofiber-clean-arch/pkg/domain"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/sync/errgroup"
 )

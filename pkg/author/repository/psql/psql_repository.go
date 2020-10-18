@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/ilmimris/poc-gofiber-clean-arch/domain"
+	"github.com/ilmimris/poc-gofiber-clean-arch/pkg/domain"
 )
 
 type psqlAuthorRepo struct {
@@ -40,6 +40,6 @@ func (p *psqlAuthorRepo) getOne(ctx context.Context, query string, args ...inter
 }
 
 func (p *psqlAuthorRepo) GetByID(ctx context.Context, id int64) (domain.Author, error) {
-	query := `SELECT id, name, created_at, updated_at FROM public.author WHERE id=?`
+	query := `SELECT id, name, created_at, updated_at FROM public.author WHERE id=$1`
 	return p.getOne(ctx, query, id)
 }
