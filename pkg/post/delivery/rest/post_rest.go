@@ -1,12 +1,13 @@
 package rest
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/ilmimris/poc-gofiber-clean-arch/pkg/domain"
-	"github.com/sirupsen/logrus"
+
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
@@ -66,11 +67,12 @@ func (ph *PostHandler) FetchPost(c *fiber.Ctx) error {
 
 	listAr, nextCursor, err := ph.PUsecase.Fetch(ctx, cursor, int64(num))
 	if err != nil {
+		c.Response().SetStatusCode(getStatusCode(err))
 		return c.JSON(ResponseError{Error: getStatusCode(err), Message: err.Error()})
 	}
 
 	c.Response().SetStatusCode(http.StatusOK)
-	c.Set(`X-Cursor`, nextCursor)
+	c.Response().Header.Set(`X-Cursor`, nextCursor)
 	return c.JSON(listAr)
 }
 
@@ -78,6 +80,7 @@ func (ph *PostHandler) FetchPost(c *fiber.Ctx) error {
 func (ph *PostHandler) GetByID(c *fiber.Ctx) error {
 	idP, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
+		c.Response().SetStatusCode(getStatusCode(err))
 		return c.JSON(ResponseError{Error: http.StatusNotFound, Message: domain.ErrNotFound.Error()})
 	}
 
@@ -86,6 +89,7 @@ func (ph *PostHandler) GetByID(c *fiber.Ctx) error {
 
 	post, err := ph.PUsecase.GetByID(ctx, id)
 	if err != nil {
+		c.Response().SetStatusCode(getStatusCode(err))
 		return c.JSON(ResponseError{Error: getStatusCode(err), Message: err.Error()})
 	}
 
@@ -97,6 +101,7 @@ func (ph *PostHandler) GetByID(c *fiber.Ctx) error {
 func (ph *PostHandler) Delete(c *fiber.Ctx) error {
 	idP, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
+		c.Response().SetStatusCode(getStatusCode(err))
 		return c.JSON(ResponseError{http.StatusNotFound, domain.ErrNotFound.Error()})
 	}
 
@@ -105,6 +110,7 @@ func (ph *PostHandler) Delete(c *fiber.Ctx) error {
 
 	err = ph.PUsecase.Delete(ctx, id)
 	if err != nil {
+		c.Response().SetStatusCode(getStatusCode(err))
 		return c.JSON(ResponseError{Error: getStatusCode(err), Message: err.Error()})
 	}
 
@@ -127,7 +133,7 @@ func getStatusCode(err error) int {
 		return http.StatusOK
 	}
 
-	logrus.Error(err)
+	log.Print(err)
 	switch err {
 	case domain.ErrInternalServerError:
 		return http.StatusInternalServerError
