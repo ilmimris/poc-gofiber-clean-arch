@@ -9,6 +9,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 	_authorRepo "github.com/ilmimris/poc-gofiber-clean-arch/pkg/author/repository/psql"
 	_postDelivery "github.com/ilmimris/poc-gofiber-clean-arch/pkg/post/delivery/rest"
 	_postRepo "github.com/ilmimris/poc-gofiber-clean-arch/pkg/post/repository/psql"
@@ -80,12 +81,15 @@ func main() {
 	app := fiber.New()
 	app.Use(cors.New())
 
+	// Use loggoer middleware
+	app.Use(logger.New())
+
 	app.Get("/", func(ctx *fiber.Ctx) error {
 		return ctx.Send([]byte("Welcome to the clean-architecture!"))
 	})
 
 	_postDelivery.NewPostHandler(app, postUcase)
 
-	_ = app.Listen(":8080")
+	log.Fatal(app.Listen(":8080"))
 
 }
