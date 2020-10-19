@@ -2,7 +2,6 @@ package rest_test
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -38,7 +37,6 @@ func TestFetch(t *testing.T) {
 
 	postRest.NewPostHandler(e, mockUCase)
 	rec, err := e.Test(req, -1)
-	fmt.Println(rec)
 
 	require.NoError(t, err)
 
