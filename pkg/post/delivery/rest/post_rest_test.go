@@ -2,6 +2,7 @@ package rest_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -32,11 +33,12 @@ func TestFetch(t *testing.T) {
 	mockUCase.On("Fetch", mock.Anything, cursor, int64(num)).Return(mockListPost, "10", nil)
 
 	e := fiber.New()
-	req, err := http.NewRequest("GET", "/post?num=1&cursor="+cursor, strings.NewReader(""))
+	req, err := http.NewRequest("GET", "/posts?num=1&cursor="+cursor, strings.NewReader(""))
 	assert.NoError(t, err)
 
 	postRest.NewPostHandler(e, mockUCase)
 	rec, err := e.Test(req, -1)
+	fmt.Println(rec)
 
 	require.NoError(t, err)
 
@@ -53,7 +55,7 @@ func TestFetchError(t *testing.T) {
 	mockUCase.On("Fetch", mock.Anything, cursor, int64(num)).Return(nil, "", domain.ErrInternalServerError)
 
 	e := fiber.New()
-	req, err := http.NewRequest("GET", "/post?num=1&cursor="+cursor, strings.NewReader(""))
+	req, err := http.NewRequest("GET", "/posts?num=1&cursor="+cursor, strings.NewReader(""))
 	assert.NoError(t, err)
 
 	postRest.NewPostHandler(e, mockUCase)
@@ -79,7 +81,7 @@ func TestGetByID(t *testing.T) {
 	mockUCase.On("GetByID", mock.Anything, int64(num)).Return(mockPost, nil)
 
 	e := fiber.New()
-	req, err := http.NewRequest("GET", "/post/"+strconv.Itoa(num), strings.NewReader(""))
+	req, err := http.NewRequest("GET", "/posts/"+strconv.Itoa(num), nil)
 	assert.NoError(t, err)
 
 	postRest.NewPostHandler(e, mockUCase)
@@ -109,7 +111,7 @@ func TestStore(t *testing.T) {
 	mockUCase.On("Store", mock.Anything, mock.AnythingOfType("*domain.Post")).Return(nil)
 
 	e := fiber.New()
-	req, err := http.NewRequest("POST", "/post", strings.NewReader(string(j)))
+	req, err := http.NewRequest("POST", "/posts", strings.NewReader(string(j)))
 	assert.NoError(t, err)
 	req.Header.Set("Content-Type", "application/json")
 
@@ -134,7 +136,7 @@ func TestDelete(t *testing.T) {
 	mockUCase.On("Delete", mock.Anything, int64(num)).Return(nil)
 
 	e := fiber.New()
-	req, err := http.NewRequest("DELETE", "/post/"+strconv.Itoa(num), strings.NewReader(""))
+	req, err := http.NewRequest("DELETE", "/posts/"+strconv.Itoa(num), strings.NewReader(""))
 	assert.NoError(t, err)
 
 	postRest.NewPostHandler(e, mockUCase)
