@@ -23,7 +23,7 @@ func NewPsqlPostRepository(db *sql.DB) domain.PostRepository {
 
 func (p *psqlPostRepo) Store(ctx context.Context, entry *domain.Post) (err error) {
 	query := `INSERT public.post 
-				SET title=? , content=? , author_id=? , updated_at=? , created_at=?`
+				SET title=$1 , content=$2 , author_id=$3 , updated_at=$4 , created_at=$5`
 
 	statement, err := p.DB.PrepareContext(ctx, query)
 	if err != nil {
