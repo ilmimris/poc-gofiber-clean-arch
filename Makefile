@@ -13,7 +13,7 @@ clean:
 	if [ -f ${BINARY} ] ; then rm ${BINARY} ; fi
 
 docker:
-	docker build -t go-clean-arch .
+	docker build -t poc-gofiber-clean-arch .
 
 run:
 	docker-compose up --build -d
