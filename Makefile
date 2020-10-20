@@ -16,10 +16,16 @@ docker:
 	docker build -t poc-gofiber-clean-arch .
 
 run:
-	docker-compose up --build -d
+	docker-compose -f docker-compose.yaml -f docker-compose.postgres.yaml up --build -d
+
+run-mysql:
+	docker-compose -f docker-compose.yaml -f docker-compose.mysql.yaml up --build -d
+
+run-postgres:
+	docker-compose -f docker-compose.yaml -f docker-compose.postgres.yaml up --build -d
 
 stop:
-	docker-compose down
+	docker-compose down --remove-orphans
 
 lint-prepare:
 	@echo "Installing golangci-lint" 

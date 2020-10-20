@@ -109,6 +109,12 @@ $ make docker
 # Run the application
 $ make run
 
+# Run the application using mysql db
+$ make run-mysql
+
+# Run the application using postgres db
+$ make run-postgres
+
 # check if the containers are running
 $ docker ps
 
