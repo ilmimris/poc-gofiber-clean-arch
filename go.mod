@@ -6,6 +6,7 @@ require (
 	github.com/andybalholm/brotli v1.0.1 // indirect
 	github.com/bxcodec/faker v2.0.1+incompatible
 	github.com/go-playground/universal-translator v0.17.0 // indirect
+	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gofiber/fiber/v2 v2.1.0
 	github.com/klauspost/compress v1.11.1 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
