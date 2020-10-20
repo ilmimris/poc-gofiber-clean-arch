@@ -8,7 +8,7 @@
   },
   "database": {
       "kind": "postgres",
-      "host": "localhost",
+      "host": "poc_psql",
       "port": "5432",
       "user": "user",
       "pass": "password",

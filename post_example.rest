@@ -1,0 +1,14 @@
+GET http://localhost:8080/
+
+###
+GET http://localhost:8080/posts
+
+###
+GET http://localhost:8080/posts/1
+
+### Test get but 404
+GET http://localhost:8080/posts/10
+
+###
+GET http://localhost:8080/posts?num=3
+

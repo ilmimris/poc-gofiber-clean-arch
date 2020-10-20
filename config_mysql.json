@@ -7,9 +7,9 @@
     "timeout":2
   },
   "database": {
-      "kind": "postgres",
-      "host": "localhost",
-      "port": "5432",
+      "kind": "mysql",
+      "host": "poc_mysql",
+      "port": "3306",
       "user": "user",
       "pass": "password",
       "name": "post"
